@@ -1597,7 +1597,36 @@ var Basiculam = (function () {
     });
   }
 
-  // --- Editor tab key ---
+  // --- Editor ---
+
+  function autoUppercaseLine(line) {
+    var out = "";
+    var i = 0;
+    while (i < line.length) {
+      var ch = line[i];
+      if (ch === '"') {
+        out += ch; i++;
+        while (i < line.length && line[i] !== '"') out += line[i++];
+        if (i < line.length) { out += '"'; i++; }
+        continue;
+      }
+      if (ch === "'") { out += line.substring(i); break; }
+      if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '_') {
+        var j = i;
+        while (j < line.length && (line[j] >= 'a' && line[j] <= 'z' || line[j] >= 'A' && line[j] <= 'Z' ||
+               line[j] >= '0' && line[j] <= '9' || line[j] === '_')) j++;
+        if (j < line.length && "$%&!#".indexOf(line[j]) >= 0) j++;
+        var word = line.substring(i, j);
+        var base = word.replace(/[$%&!#]$/, "").toUpperCase();
+        if (base === "REM") { out += "REM" + line.substring(j); break; }
+        out += KEYWORDS.has(base) ? base + word.substring(base.length) : word;
+        i = j;
+        continue;
+      }
+      out += ch; i++;
+    }
+    return out;
+  }
 
   function setupEditor() {
     editor.addEventListener("keydown", function (e) {
@@ -1607,6 +1636,20 @@ var Basiculam = (function () {
         var end = editor.selectionEnd;
         editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
         editor.selectionStart = editor.selectionEnd = start + 4;
+      }
+      if (e.key === "Enter") {
+        setTimeout(function () {
+          var pos = editor.selectionStart;
+          var text = editor.value;
+          var prevLineEnd = pos - 1;
+          var prevLineStart = text.lastIndexOf("\n", prevLineEnd - 1) + 1;
+          var prevLine = text.substring(prevLineStart, prevLineEnd);
+          var uppercased = autoUppercaseLine(prevLine);
+          if (uppercased !== prevLine) {
+            editor.value = text.substring(0, prevLineStart) + uppercased + text.substring(prevLineEnd);
+            editor.selectionStart = editor.selectionEnd = pos;
+          }
+        }, 0);
       }
     });
 
