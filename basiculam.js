@@ -1637,19 +1637,31 @@ var Basiculam = (function () {
         editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
         editor.selectionStart = editor.selectionEnd = start + 4;
       }
+
       if (e.key === "Enter") {
-        setTimeout(function () {
-          var pos = editor.selectionStart;
-          var text = editor.value;
-          var prevLineEnd = pos - 1;
-          var prevLineStart = text.lastIndexOf("\n", prevLineEnd - 1) + 1;
-          var prevLine = text.substring(prevLineStart, prevLineEnd);
-          var uppercased = autoUppercaseLine(prevLine);
-          if (uppercased !== prevLine) {
-            editor.value = text.substring(0, prevLineStart) + uppercased + text.substring(prevLineEnd);
-            editor.selectionStart = editor.selectionEnd = pos;
-          }
-        }, 0);
+        e.preventDefault();
+        var start = editor.selectionStart;
+        var text = editor.value;
+        var lineStart = text.lastIndexOf("\n", start - 1) + 1;
+        var currentLine = text.substring(lineStart, start);
+        var indent = currentLine.match(/^( *)/)[1];
+        var uppercased = autoUppercaseLine(currentLine);
+        var insert = uppercased + "\n" + indent;
+        editor.value = text.substring(0, lineStart) + insert + text.substring(start);
+        editor.selectionStart = editor.selectionEnd = lineStart + insert.length;
+      }
+
+      if (e.key === "Backspace" && editor.selectionStart === editor.selectionEnd) {
+        var start = editor.selectionStart;
+        var text = editor.value;
+        var lineStart = text.lastIndexOf("\n", start - 1) + 1;
+        var beforeCursor = text.substring(lineStart, start);
+        if (beforeCursor.length > 0 && /^ +$/.test(beforeCursor)) {
+          e.preventDefault();
+          var remove = beforeCursor.length % 4 === 0 ? 4 : beforeCursor.length % 4;
+          editor.value = text.substring(0, start - remove) + text.substring(start);
+          editor.selectionStart = editor.selectionEnd = start - remove;
+        }
       }
     });
 
