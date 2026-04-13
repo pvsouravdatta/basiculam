@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basiculam</title>
+  <link rel="stylesheet" href="basiculam.css">
+</head>
+<body>
+  <div id="menubar">
+    <div class="menu-item" id="menu-file">
+      File
+      <div class="menu-dropdown" id="dropdown-file">
+        <div class="menu-option" id="menu-new">New</div>
+        <div class="menu-option" id="menu-open">Open...</div>
+        <div class="menu-option" id="menu-save">Save</div>
+        <div class="menu-option" id="menu-saveas">Save As...</div>
+        <div class="menu-separator"></div>
+        <div class="menu-option" id="menu-clearfiles">Clear All Files</div>
+      </div>
+    </div>
+    <div class="menu-item" id="menu-run">
+      Run
+      <div class="menu-dropdown" id="dropdown-run">
+        <div class="menu-option" id="menu-start">Start (F5)</div>
+      </div>
+    </div>
+    <div class="menu-item" id="menu-examples">
+      Examples
+      <div class="menu-dropdown" id="dropdown-examples">
+        <div class="menu-option" id="example-hello">Hello World</div>
+        <div class="menu-option" id="example-fizzbuzz">FizzBuzz</div>
+        <div class="menu-option" id="example-fibonacci">Fibonacci</div>
+        <div class="menu-option" id="example-guess">Guess the Number</div>
+        <div class="menu-option" id="example-sort">Bubble Sort</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="toolbar-btn" id="btn-run" title="Run (F5)">&#9654; Run</div>
+    <div class="toolbar-btn" id="btn-stop" title="Stop" style="display:none">&#9632; Stop</div>
+  </div>
+
+  <div id="main">
+    <div id="editor-panel">
+      <div class="panel-title">Editor</div>
+      <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+    </div>
+    <div id="divider"></div>
+    <div id="console-panel">
+      <div class="panel-title">Output</div>
+      <div id="console"></div>
+      <div id="console-input-row">
+        <span id="console-input-label"></span>
+        <input type="text" id="console-input" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+      </div>
+    </div>
+  </div>
+
+  <div id="statusbar">
+    <span id="status-filename">Untitled</span>
+    <span id="status-msg"></span>
+  </div>
+
+  <!-- Modal dialog for file operations -->
+  <div id="modal-overlay">
+    <div id="modal">
+      <div id="modal-title">Dialog</div>
+      <div id="modal-body"></div>
+      <div id="modal-buttons"></div>
+    </div>
+  </div>
+
+  <script src="basiculam.js"></script>
+</body>
+</html>
